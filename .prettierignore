@@ -1,0 +1,40 @@
+# Ignore artifacts:
+build
+coverage
+node_modules
+
+# Ignore all files and directories in the following paths:
+**/node_modules
+**/build
+**/dist
+**/coverage
+
+# Ignore specific file types:
+*.min.js
+*.bundle.js
+*.log
+*.svg
+*.png
+*.jpg
+*.jpeg
+*.gif
+
+# Ignore specific directories:
+public
+logs
+tmp
+temp
+
+# Ignore specific configuration files:
+package-lock.json
+yarn.lock
+tsconfig.json
+
+# Ignore specific files in the root directory:
+!/.prettierrc
+!/.prettierignore
+
+# Uncomment below to ignore all files except for specific directories
+#/*
+# !src/
+# !lib/
