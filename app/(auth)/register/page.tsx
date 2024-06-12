@@ -18,12 +18,12 @@ function Register() {
         password,
       });
       console.log('Registration Successful', response.data);
-      const result = await signIn('credentials', {
+      await signIn('credentials', {
         redirect: false,
         username,
         password,
       });
-      if (result) router.push('/');
+      router.push('/');
     } catch (error) {
       console.error('Registration Failed', error);
     }

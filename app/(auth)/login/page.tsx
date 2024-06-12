@@ -11,16 +11,15 @@ function Login() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const result = await signIn('credentials', {
-      redirect: false, // Prevent automatic redirection
-      username,
-      password,
-    });
-
-    if (result.ok) {
+    try {
+      await signIn('credentials', {
+        redirect: false, // Prevent automatic redirection
+        username,
+        password,
+      });
       router.push('/'); // Redirect to dashboard after successful login
-    } else {
-      console.error('Login Failed:', result); // Added more context to the error message
+    } catch (error) {
+      console.error('Login Failed:'); // Added more context to the error message
     }
   };
 
