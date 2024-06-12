@@ -62,19 +62,14 @@ const handler = NextAuth({
 
       return !!existingUser;
     },
-    async jwt({ token, user }) {
-      if (user) {
+    async jwt({ token, user, trigger }) {
+      if (trigger === 'signIn') {
         token.id = user.id; // Append id to the token
       }
       return token;
     },
     async session({ session, token }) {
       session.user.id = token.id;
-      if (token.username) {
-        console.log('token: ', token);
-        session.user.username = token.username; // Ensure username is added to the session
-      }
-      console.log('session: ', session);
       return session;
     },
   },
