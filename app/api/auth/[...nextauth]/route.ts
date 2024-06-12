@@ -2,7 +2,7 @@ import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
-import bcrypt from 'bcryptjs'; // Ensure bcryptjs is imported
+// import bcrypt from 'bcryptjs'; // Ensure bcryptjs is imported
 
 const handler = NextAuth({
   session: {
@@ -38,11 +38,12 @@ const handler = NextAuth({
           return null;
         }
 
-        const passwordMatch = await bcrypt.compare(password, user.password);
-        if (!passwordMatch) {
-          console.log('Password mismatch for user:', username);
-          return null;
-        }
+        // const passwordMatch = await bcrypt.compare(password, user.password);
+        // if (!passwordMatch) {
+        //   console.log('Password mismatch for user:', username);
+        //   return null;
+        // }
+        if (password != user.password) return null;
 
         return { id: user.id.toString(), username: user.username };
       },
