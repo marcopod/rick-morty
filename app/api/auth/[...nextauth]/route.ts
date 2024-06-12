@@ -21,6 +21,7 @@ const handler = NextAuth({
       },
       async authorize(credentials) {
         if (!credentials) {
+          console.log('no credentials');
           return null;
         }
 
@@ -30,9 +31,10 @@ const handler = NextAuth({
         const user = await prisma.user.findFirst({
           where: { username: username },
         });
+        console.log('user: ', user);
 
         if (!user) {
-          console.log('No user found with the username:', username);
+          console.log('No user found with the username: ', username);
           return null;
         }
 
@@ -56,6 +58,7 @@ const handler = NextAuth({
       const existingUser = await prisma.user.findFirst({
         where: { username },
       });
+      console.log('signIn: ', !!existingUser);
 
       return !!existingUser;
     },
@@ -68,8 +71,10 @@ const handler = NextAuth({
     async session({ session, token }) {
       session.user.id = token.id;
       if (token.username) {
+        console.log('token: ', token);
         session.user.username = token.username; // Ensure username is added to the session
       }
+      console.log('session: ', session);
       return session;
     },
   },

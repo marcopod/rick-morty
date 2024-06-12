@@ -17,10 +17,10 @@ function Login() {
       password,
     });
 
-    if (result?.error) {
-      console.error('Login Failed:', result.error); // Added more context to the error message
-    } else if (result.ok) {
+    if (result.ok) {
       router.push('/'); // Redirect to dashboard after successful login
+    } else {
+      console.error('Login Failed:', result); // Added more context to the error message
     }
   };
 
