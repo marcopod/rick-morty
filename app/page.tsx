@@ -18,12 +18,7 @@ function CharacterList() {
   useEffect(() => {
     if (status === 'authenticated') {
       fetch('/api/getAllCharacter')
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
-        })
+        .then((response) => response.json())
         .then((data) => {
           setCharacters(data);
           setLoading(false);
@@ -33,32 +28,51 @@ function CharacterList() {
           setLoading(false);
         });
 
-      // Load favorites from sessionStorage when the component mounts
-      const storedFavorites = sessionStorage.getItem('favorites');
-      if (storedFavorites) {
-        setFavorites(JSON.parse(storedFavorites));
-      }
+      // Fetch favorite characters from the API
+      axios;
+      axios
+        .get('/api/getFavoriteCharacters', {
+          params: {
+            userId: Number(session.user.id),
+          },
+        })
+        .then((response) => {
+          const favoriteCharacterIds = response.data.map(
+            (fav) => fav.characterId
+          );
+          setFavorites(favoriteCharacterIds);
+          sessionStorage.setItem(
+            'favorites',
+            JSON.stringify(favoriteCharacterIds)
+          );
+        })
+        .catch((error) => {
+          console.error('Error fetching favorite characters:', error);
+        });
     }
-  }, [session]);
+  }, [session, status]);
 
   const handleFavorite = (id: number) => {
-    const updatedFavorites = favorites.includes(id)
-      ? favorites.filter((favId) => favId !== id) // If already favorited, remove it
-      : [...favorites, id]; // If not favorited, add it
+    const isCurrentlyFavorite = favorites.includes(id);
+    const updatedFavorites = isCurrentlyFavorite
+      ? favorites.filter((favId) => favId !== id)
+      : [...favorites, id];
+
     setFavorites(updatedFavorites);
     sessionStorage.setItem('favorites', JSON.stringify(updatedFavorites));
 
-    const favoriteInDatabase = async () => {
-      try {
-        await axios.post('/api/favoriteCharacter', {
-          userId: Number(session.user.id),
-          characterId: Number(id),
-        });
-      } catch (error) {
-        console.error('Error setting a favorite character in database', error);
-      }
-    };
-    favoriteInDatabase();
+    const apiUrl = isCurrentlyFavorite
+      ? '/api/unfavoriteCharacter'
+      : '/api/favoriteCharacter';
+
+    axios
+      .post(apiUrl, {
+        userId: Number(session.user.id),
+        characterId: Number(id),
+      })
+      .catch((error) => {
+        console.error('Error updating favorite character in database:', error);
+      });
   };
 
   if (status === 'unauthenticated') {
@@ -84,7 +98,7 @@ function CharacterList() {
               href={`/c/${character.id}`}
               className="bg-gradient-to-r from-violet-600 to-indigo-600 rounded-md flex justify-center flex-col"
             >
-              <img src={character.image}></img>
+              <img src={character.image} alt={character.name} />
               <p className="text-center">
                 {character.name} - {character.species}
               </p>
